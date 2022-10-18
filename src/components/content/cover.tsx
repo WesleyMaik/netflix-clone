@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from 'react-redux'
-import { getMovies } from "../../hook/getMovie";
-import { setMovies } from "../../store/movie";
+import { getMovies } from "../../hook/getContent";
+import { setMovies } from "../../store/contents";
 
 
 //Components
@@ -90,7 +90,7 @@ export const Cover = () => {
                 align-items:flex-end;
                 &:before{
                     max-width:100%;
-                    height:8em;
+                    height:100%;
                     background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(255,255,255,0) 100%);
                 }
                 .info{

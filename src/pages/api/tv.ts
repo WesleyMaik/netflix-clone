@@ -8,6 +8,7 @@ export interface ITvResult {
   genre_ids?: (number)[] | null;
   id: number;
   name: string;
+  title?:string;
   origin_country?: string[] | null;
   original_language: string;
   original_name: string;
