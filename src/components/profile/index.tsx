@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { api } from '../../services/api';
 import { useEffect, useState } from "react";
 import { IUserData } from "../../pages/api/users";
+import Cookies from 'js-cookie'
 
 //Components
 import Link from 'next/link';
@@ -14,7 +15,7 @@ export const Profiles = () => {
     const [users, setUsers] = useState<IUserData[] | null>(null);
     useEffect(() => {
         if(!users) api('/api/users').then(({data}) => {
-            setUsers(data)
+            setUsers(data);
         });
     }, [users]);
 
@@ -40,14 +41,18 @@ export const Profiles = () => {
             }
         }
     `;
+
+    const handleChoice = (id:string) => {
+        Cookies.set('profile', id);
+    };
     
     return(
         <Container>
             {
                 users && users.map((user, key) => {
                     return (
-                        <Link href='/browser' key={key}>
-                            <motion.div 
+                        <Link href='/browser' key={key} onClick={() => handleChoice(user.id)}>
+                            <motion.div
                                 className="avatar"
                                 initial={{ opacity:0, scale: 1.2 }}
                                 animate={{ opacity:1, scale: 1 }}

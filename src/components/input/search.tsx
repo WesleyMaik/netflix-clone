@@ -30,10 +30,15 @@ export const Search = () => {
                 color:#ffffffaf;
             }
         }
+
+        @media screen and (max-width:768px) {
+            .field{
+                display:none;
+            }
+        }
     `;
     
     const ref = useRef<HTMLLabelElement>(null);
-
 
     return(
         <Container ref={ref}>

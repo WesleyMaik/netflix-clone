@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { ITvResult } from "../../pages/api/tv";
 import { theMovieDb } from "../../services/api";
 import { IMovieResult } from "../../pages/api/movie";
-import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from "react";
+import { forwardRef, MouseEvent, useCallback, useImperativeHandle, useRef, useState } from "react";
 import { getMovies, getSeries } from "../../hook/getContent";
 
 //Components
@@ -15,7 +15,7 @@ import { Button, Heading, HStack, Skeleton, Text, useMediaQuery } from "@chakra-
 import "swiper/css";
 import "swiper/css/navigation";
 import { motion } from "framer-motion";
-import { HiPlay, HiInformationCircle, HiPlus } from "react-icons/hi2";
+import { HiPlay, HiPlus } from "react-icons/hi2";
 
 interface IContentProps{
     type?:"movie" | "tv",
@@ -143,13 +143,12 @@ export const Contents = (props:IContentProps) => {
         const Container = styled.div`
             .current-content{
                 width:100%;
-                min-height:30em;
+                height:30em;
                 display:flex;
                 flex-direction:row;
                 gap:.25em;
                 background:#001;
                 margin:.5em 0;
-                padding:1em;
                 position:relative;
                 background-image:url('${theMovieDb.cover + content?.backdrop_path}');
                 background-position:top;
@@ -176,6 +175,15 @@ export const Contents = (props:IContentProps) => {
                     padding:1em;
                     z-index:1;
 
+                    .overview{
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        display: -webkit-box;
+                        -webkit-line-clamp: 4;
+                                line-clamp: 4; 
+                        -webkit-box-orient: vertical;
+                    }
+
                     .actions{
                         margin-top:auto;
                         .button{
@@ -198,7 +206,10 @@ export const Contents = (props:IContentProps) => {
             }
         `;
 
-        const date = (content) &&  new Date(content.first_air_date).getFullYear() || null;
+        const date = (content) && (new Date(content.first_air_date).getFullYear() || new Date(content.release_date).getFullYear());
+        const genresTitle = content?.genre_ids?.map((genre) => { return getTranslatedGenre(genre) })
+            .filter(genre => genre)
+            .join(' - ');
 
         return(
             <Container>
@@ -206,14 +217,14 @@ export const Contents = (props:IContentProps) => {
                     (content) && 
                     <motion.div 
                         className="current-content"
-                        initial={{ opacity:0, height:0 }}
-                        animate={{ opacity:1, height:'30em' }}
+                        initial={{ opacity:0, minHeight:0 }}
+                        animate={{ opacity:1, minHeight:'30em' }}
                     >
                         <div className="info">
                             { date && <Text>{ date }</Text> }
                             <Heading size="lg">{ content.title || content.name }</Heading>
-                            <Text>{ content?.genre_ids?.map((genre) => { return getTranslatedGenre(genre) }).join(' - ') }</Text>
-                            <Text>{ content.overview }</Text>
+                            <Text>{ genresTitle }</Text>
+                            <Text className="overview">{ content.overview }</Text>
                             <HStack className="actions">
                                 <Button className="button button_play"><HiPlay />  Assistir</Button>
                                 <Button className="button button_info"><HiPlus /> Adicionar a lista</Button>
@@ -298,38 +309,36 @@ export const Contents = (props:IContentProps) => {
                         }
                     `;
 
+                    return(
+                        <SwiperSlide className="slide" key={key}>
+                            <ContentSlide />
+                        </SwiperSlide>
+                    );
 
-                    const ContentSlide = () => {
+                    function ContentSlide(){
                         const title = item['title'] ||  item['name'];
                         const contentRef = useRef<HTMLDivElement>(null);
 
-                        const handleOpen = () => {
-                            document.querySelectorAll('.content').forEach((element) => {
-                                element.classList.remove('active');
-                            });
-                            contentRef.current?.classList.add('active');
-                            if(event?.target != contentRef?.current){
+                        const handleOpen = () => {                            
+                            if(!(contentRef.current?.classList.contains('active'))){
                                 document.querySelectorAll('.current-content').forEach((element) => {
                                     element.remove();
                                 });
                             };
+
+                            document.querySelectorAll('.content').forEach((element) => {
+                                element.classList.remove('active');
+                            });
+                            contentRef.current?.classList.add('active');
                             currentRef.current?.handleContent(item);
                         };
 
                         return(
-                            <>
-                                <SwiperSlide className="slide" onClick={handleOpen}>
-                                    <Content className="content" ref={contentRef}>
-                                        <Heading size="sm" className="title">{ title }</Heading>
-                                    </Content>
-                                </SwiperSlide>
-                            </>
+                            <Content className="content" ref={contentRef} onClick={handleOpen}>
+                                <Heading size="sm" className="title">{ title }</Heading>
+                            </Content>
                         )
                     };
-
-                    return(
-                        <ContentSlide key={key} />
-                    )
                 })
             }
             </Swiper>

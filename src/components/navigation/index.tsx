@@ -44,11 +44,64 @@ export const Navigation = () => {
             background:#12151c;
         }
         
+        .logo{
+            min-width:2vw;
+        }
+        .logo-responsive{
+            display:none;
+        }
+
+        .stack{
+            button{
+                font-size:1em;
+            }
+        }
+
         .categories, .options{
             button{
                 background:none;
                 &:hover{
                     opacity:.75;
+                }
+            }
+        }
+
+        @media screen and (max-width:1090px){
+            .stack{
+                button{
+                    font-size:.8em;
+                }
+            }
+        }
+
+        @media screen and (max-width:960px){
+            .logo{
+                display:none;
+            }
+            .logo-responsive{
+                display:block;
+                min-width:16px;
+            }
+            .stack{
+                justify-content:center;
+                button{
+                    font-size:1em;
+                }
+            }
+            .categories{
+                justify-content:center;
+                padding:0;
+                .home, .list{
+                    display:none;
+                }
+            }
+            .options{
+                margin:0;
+                &> *:not(:first-child){
+                    display:none;
+                }
+                &> *:first-child{
+                    padding:0;
                 }
             }
         }
@@ -70,23 +123,28 @@ export const Navigation = () => {
 
     return(
         <Container ref={containerRef}>
-            <Image src="/logo.png" width={128} height={32}/>
-            <HStack width='100%' justifyContent="space-between">
+            <span className="logo">
+                <Image src="/logo.png" width={128} height={32}/>
+            </span>
+            <span className="logo-responsive">
+                <Image src="/logo-short.png" width={16} height={32}/>
+            </span>
+            <HStack className="stack" width='100%' justifyContent="space-between">
                 <Flex className="categories" gap=".5em" padding='0 1em'>
                     <Link href="#">
-                        <Button>Início</Button>
+                        <Button className="home">Início</Button>
                     </Link>
                     <Link href="#">
-                        <Button>Séries</Button>
+                        <Button className="series">Séries</Button>
                     </Link>
                     <Link href="#">
-                        <Button>Filmes</Button>
+                        <Button className="movie">Filmes</Button>
                     </Link>
                     <Link href="#">
-                        <Button>Mais recentes</Button>
+                        <Button className="category">Categorias</Button>
                     </Link>
                     <Link href="#">
-                        <Button>Minha lista</Button>
+                        <Button className="list">Minha lista</Button>
                     </Link>
                 </Flex>
                 <Flex className="options" alignItems='center'>

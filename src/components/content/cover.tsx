@@ -61,6 +61,15 @@ export const Cover = () => {
                 gap:1em;
                 z-index:1;
 
+                .overview{
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 6;
+                            line-clamp: 6; 
+                    -webkit-box-orient: vertical;
+                }
+
                 button{
                     gap:.5em;
                     &:hover{
@@ -110,11 +119,12 @@ export const Cover = () => {
                 (!loaded) ?
                 <Skeleton className="cover" /> :
                 <div className="cover" style={{
-                    backgroundImage:`url(${cover || '/img/cover.jpg'})`
+                    backgroundImage:`url(${cover})`,
+                    backgroundColor:"#000"
                 }}>
                     <div className="info">
                         <Heading size="2xl">{featured?.title || 'Lorem Ipsum'}</Heading>
-                        <Text>
+                        <Text className="overview">
                             {
                                 featured?.overview ||    
                                 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Exercitationem cupiditate quis molestiae tempore saepe itaque eligendi repellendus soluta quo illum impedit et odio, iste eaque, laboriosam beatae temporibus ea rem!'
